@@ -2,9 +2,8 @@
 
 class User_model extends CI_Model
 {
-
-    public function getUser()
+    public function login($username, $password)
     {
-        return $this->db->get('tb_user');
+        return $this->db->query("SELECT * FROM user WHERE username='$username' AND password='$password' ")->row_array();
     }
 }

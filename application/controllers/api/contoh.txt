@@ -1,0 +1,115 @@
+<?php
+
+use Restserver\Libraries\REST_Controller;
+
+defined('BASEPATH') or exit('No direct script access allowed');
+
+require APPPATH . 'libraries/REST_Controller.php';
+require APPPATH . 'libraries/Format.php';
+
+class Auth extends REST_Controller
+{
+
+    public function __construct()
+    {
+        parent::__construct();
+        $this->load->model('User_model', 'user');
+    }
+
+    public function index_get()
+    {
+        $username = $this->get('username');
+        $password = $this->get('password');
+
+        if ($username === null && $password === null) {
+            $user = $this->user->getUser();
+        } else {
+            $user = $this->user->getUser($username, $password);
+        }
+
+        if ($user) {
+            $this->response([
+                'status' => true,
+                'data' => $user,
+            ], REST_Controller::HTTP_OK);
+        } else {
+            $this->response([
+                'status' => false,
+                'messages' => "Data Tidak Di Temukan",
+            ], REST_Controller::HTTP_NOT_FOUND);
+        }
+    }
+
+    public function index_delete()
+    {
+        $nik = $this->delete('nik');
+        if ($nik === null) {
+            $this->response([
+                'status' => false,
+                'messages' => "Pilih data terlebih dahulu",
+            ], REST_Controller::HTTP_BAD_REQUEST);
+        } else {
+            if ($this->user->delUser($nik) > 0) {
+                $this->response([
+                    'status' => true,
+                    'messages' => "Data Berhasil Di Hapus",
+                ], REST_Controller::HTTP_ACCEPTED);
+            } else {
+                $this->response([
+                    'status' => false,
+                    'messages' => "Data Gagal di Hapus",
+                ], REST_Controller::HTTP_CONFLICT);
+            }
+        }
+    }
+
+    public function index_put()
+    {
+        $old_nik = $this->put('old_nik');
+        $data = [
+            'nik' => $this->post('nik'),
+            'email' => $this->post('email'),
+            'username' => $this->post('username'),
+            'password' => $this->post('password'),
+        ];
+
+        if ($this->user->updateUser($data, $old_nik) > 0) {
+            $this->response([
+                'status' => true,
+                'messages' => "User Has Been Updated",
+            ], REST_Controller::HTTP_CREATED);
+        } else {
+            $this->response([
+                'status' => false,
+                'messages' => "Failed create user",
+            ], REST_Controller::HTTP_NOT_ACCEPTABLE);
+        }
+    }
+
+    public function index_post()
+    {
+
+        $id_user = $this->post('id_user');
+        $cek = $this->user->cek($id_user);
+        if (!$cek) {
+            $user = $this->user->delUser($id_user);
+            if (!$user) {
+                $this->response([
+                    'status' => false,
+                    'messages' => "Data Tidak Di Temukan",
+                ], REST_Controller::HTTP_NOT_FOUND);
+            } else {
+                $this->response([
+                    'status' => true,
+                    'data' => $user,
+                    'messages' => "Berhasil di hapus",
+                ], REST_Controller::HTTP_OK);
+            }
+        } else {
+            $this->response([
+                'status' => false,
+                'messages' => "User Sedang Meminjam Buku",
+            ], REST_Controller::HTTP_OK);
+        }
+    }
+}
