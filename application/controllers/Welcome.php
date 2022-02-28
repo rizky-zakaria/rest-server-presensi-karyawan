@@ -1,7 +1,8 @@
 <?php
-defined('BASEPATH') OR exit('No direct script access allowed');
+defined('BASEPATH') or exit('No direct script access allowed');
 
-class Welcome extends CI_Controller {
+class Welcome extends CI_Controller
+{
 
 	/**
 	 * Index Page for this controller.
@@ -23,5 +24,12 @@ class Welcome extends CI_Controller {
 		$this->load->helper('url');
 
 		$this->load->view('welcome_message');
+	}
+
+	public function input()
+	{
+		$file['file'] = $this->upload->do_upload('file');
+		var_dump($file);
+		die;
 	}
 }

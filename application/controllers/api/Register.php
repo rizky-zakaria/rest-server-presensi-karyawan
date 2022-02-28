@@ -23,7 +23,7 @@ class Register extends REST_Controller
         $nik = $this->post('nik');
         $no_hp = $this->post('no_hp');
         $jk = $this->post('jk');
-        $foto = $this->post('foto');
+        // $foto = $this->post('foto');
 
         $cek_user = $this->db
             ->query("SELECT * FROM  tb_user WHERE username = '$username'")
@@ -55,9 +55,9 @@ class Register extends REST_Controller
                     ->row_array();
                 if ($get_user) {
                     $data = $this->db->query(
-                        'INSERT INTO `tb_biodata` (`id`, `id_user`, `nama`, `alamat`, `nik`, `no_hp`, `jk`, `foto`) VALUES (NULL,' .
+                        'INSERT INTO `tb_biodata` (`id`, `id_user`, `nama`, `alamat`, `nik`, `no_hp`, `jk`) VALUES (NULL,' .
                             $get_user['id'] .
-                            " , '$nama', '$alamat', '$nik', '$no_hp', '$jk', '$foto')"
+                            " , '$nama', '$alamat', '$nik', '$no_hp', '$jk')"
                     );
                     if ($data) {
                         $this->response(

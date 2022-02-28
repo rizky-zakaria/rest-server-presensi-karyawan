@@ -20,16 +20,16 @@ class Auth extends REST_Controller
     {
         $username = $this->post('username');
         $password = md5($this->post('password'));
-        $data = $this->db->query("SELECT * FROM  tb_user WHERE username = '$username' AND password='$password'")->result_array();
+        $data = $this->db->query("SELECT * FROM  tb_user WHERE username = '$username' AND password='$password'")->row_array();
         if ($data) {
             $this->response([
                 'status' => true,
-                'messages' => "Data Anda",
+                'messages' => "Anda Berhasil Login",
                 'data' => $data,
             ], REST_Controller::HTTP_OK);
         } else {
             $this->response([
-                'status' => true,
+                'status' => false,
                 'messages' => "Data Not Found",
                 'data' => $data,
             ], REST_Controller::HTTP_NOT_FOUND);
