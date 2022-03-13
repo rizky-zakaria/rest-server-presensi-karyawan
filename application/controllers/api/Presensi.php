@@ -59,6 +59,11 @@ class Presensi extends REST_Controller
                         ], REST_Controller::HTTP_NOT_FOUND);
                     }
                 }
+            } else {
+                $this->response([
+                    'status' => false,
+                    'messages' => "Server Belum DiAktifkan"
+                ], REST_Controller::HTTP_FOUND);
             }
         } else if ($flag === 'pulang') {
             $cek_pulang = $this->db->query("SELECT waktu_pulang FROM presensi WHERE id_presensi = '$id_presensi' ")->row_array();
