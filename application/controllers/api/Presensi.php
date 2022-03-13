@@ -66,42 +66,58 @@ class Presensi extends REST_Controller
                 ], REST_Controller::HTTP_FOUND);
             }
         } else if ($flag === 'pulang') {
-            $cek_pulang = $this->db->query("SELECT waktu_pulang FROM presensi WHERE id_presensi = '$id_presensi' ")->row_array();
+            $cek_plg = $this->db->query("SELECT * FROM presensi WHERE id_presensi = '$id_presensi'")->row_array();
             // var_dump($cek_pulang['waktu_pulang']);
             // die;
-            if ($cek_pulang['waktu_pulang'] === "-") {
-                if (date('H') < 17) {
-                    $query = $this->db->query("UPDATE `presensi` SET `waktu_pulang` = '$waktu_pulang', `ket_pulang` = 'Cepat Pulang' WHERE `presensi`.`id_presensi` = '$id_presensi'");
-                    if ($query) {
-                        $this->response([
-                            'status' => true,
-                            'messages' => "Berhasil Melakukan Presensi Presensi Pulang"
-                        ], REST_Controller::HTTP_OK);
-                    } else {
-                        $this->response([
-                            'status' => false,
-                            'messages' => "Data Not Found"
-                        ], REST_Controller::HTTP_NOT_FOUND);
-                    }
-                } else {
-                    $query = $this->db->query("UPDATE `presensi` SET `waktu_pulang` = '$waktu_pulang', `ket_pulang` = 'Tepat Waktu' WHERE `presensi`.`id_presensi` = '$id_presensi'");
-                    if ($query) {
-                        $this->response([
-                            'status' => true,
-                            'messages' => "Berhasil Melakukan Presensi Presensi Pulang"
-                        ], REST_Controller::HTTP_OK);
-                    } else {
-                        $this->response([
-                            'status' => false,
-                            'messages' => "Data Not Found"
-                        ], REST_Controller::HTTP_NOT_FOUND);
-                    }
-                }
-            } elseif ($cek_pulang !== null) {
+            if ($cek_plg === null) {
                 $this->response([
                     'status' => false,
-                    'messages' => "Anda Telah Melakukan Presensi Pulang Hari Ini"
-                ], REST_Controller::HTTP_FOUND);
+                    'messages' => "Server Belum Di Aktifkan"
+                ], REST_Controller::HTTP_NOT_FOUND);
+            } else {
+                $cek_p = $this->db->query("SELECT waktu_pulang FROM presensi WHERE id_presensi = '$id_presensi' AND waktu_datang = '-'")->row_array();
+                if ($cek_p !== null) {
+                    $this->response([
+                        'status' => false,
+                        'messages' => "Silahkan Absen Ke Datangan Terlebih Dahulu"
+                    ], REST_Controller::HTTP_NOT_FOUND);
+                } else {
+                    $cek_pulang = $this->db->query("SELECT waktu_pulang FROM presensi WHERE id_presensi = '$id_presensi'")->row_array();
+                    if ($cek_pulang['waktu_pulang'] === "-") {
+                        if (date('H') < 17) {
+                            $query = $this->db->query("UPDATE `presensi` SET `waktu_pulang` = '$waktu_pulang', `ket_pulang` = 'Cepat Pulang' WHERE `presensi`.`id_presensi` = '$id_presensi'");
+                            if ($query) {
+                                $this->response([
+                                    'status' => true,
+                                    'messages' => "Berhasil Melakukan Presensi Presensi Pulang"
+                                ], REST_Controller::HTTP_OK);
+                            } else {
+                                $this->response([
+                                    'status' => false,
+                                    'messages' => "Data Not Found"
+                                ], REST_Controller::HTTP_NOT_FOUND);
+                            }
+                        } else {
+                            $query = $this->db->query("UPDATE `presensi` SET `waktu_pulang` = '$waktu_pulang', `ket_pulang` = 'Tepat Waktu' WHERE `presensi`.`id_presensi` = '$id_presensi'");
+                            if ($query) {
+                                $this->response([
+                                    'status' => true,
+                                    'messages' => "Berhasil Melakukan Presensi Presensi Pulang"
+                                ], REST_Controller::HTTP_OK);
+                            } else {
+                                $this->response([
+                                    'status' => false,
+                                    'messages' => "Data Not Found"
+                                ], REST_Controller::HTTP_NOT_FOUND);
+                            }
+                        }
+                    } elseif ($cek_pulang !== null) {
+                        $this->response([
+                            'status' => false,
+                            'messages' => "Anda Telah Melakukan Presensi Pulang Hari Ini"
+                        ], REST_Controller::HTTP_FOUND);
+                    }
+                }
             }
         } else {
             $this->response([
