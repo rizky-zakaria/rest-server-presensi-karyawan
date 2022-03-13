@@ -48,4 +48,10 @@ class LaporanController extends CI_Controller
         // var_dump($data);
         $this->load->view('laporan_diajukan', $data);
     }
+
+    public function tgl()
+    {
+        date_default_timezone_set('Asia/Makassar');
+        echo date('His');
+    }
 }

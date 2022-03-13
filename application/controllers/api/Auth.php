@@ -20,7 +20,7 @@ class Auth extends REST_Controller
     {
         $username = $this->post('username');
         $password = md5($this->post('password'));
-        $data = $this->db->query("SELECT * FROM  tb_user WHERE username = '$username' AND password='$password'")->row_array();
+        $data = $this->db->query("SELECT * FROM  user JOIN pegawai ON user.id_user = pegawai.id_user WHERE username = '$username' AND password='$password'")->row_array();
         if ($data) {
             $this->response([
                 'status' => true,
