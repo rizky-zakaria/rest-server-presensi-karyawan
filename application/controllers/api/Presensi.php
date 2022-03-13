@@ -33,7 +33,7 @@ class Presensi extends REST_Controller
                 //     ], REST_Controller::HTTP_FOUND);
                 // } else {
                 if (date('H') < 9) {
-                    $query = $this->db->query("UPDATE `presensi` SET `waktu_datang` = '$waktu_datang', `ket_datang` = 'Tepat Waktu' WHERE `presensi`.`id_presensi` = '$id_presensi'");
+                    $query = $this->db->query("UPDATE `presensi` SET `waktu_datang` = '$waktu_datang', `ket_datang` = 'Tepat Waktu', `ket_pulang` = 'Bolos' WHERE `presensi`.`id_presensi` = '$id_presensi'");
                     if ($query) {
                         $this->response([
                             'status' => true,
