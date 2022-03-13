@@ -20,15 +20,18 @@ class Presensi extends REST_Controller
         $keterangan = 'Hadir';
         $id_presensi = date('dMY') . $id_user;
         $flag = $this->post('flag');
-
+        // var_dump($id_presensi);
+        // die;
         if ($flag === 'datang') {
-            $cek_datang = $this->db->query("SELECT waktu_datang FROM presensi WHERE id_presensi = '$id_presensi'")->row_array();
+            $cek_datang = $this->db->query("SELECT waktu_datang FROM presensi WHERE id_presensi = '$id_presensi' AND waktu_datang = '-' ")->row_array();
+            // var_dump($cek_datang);
+            // die;
             if ($cek_datang !== null) {
-                $this->response([
-                    'status' => false,
-                    'messages' => "Anda Telah Melakukan Presensi Datang Hari Ini"
-                ], REST_Controller::HTTP_FOUND);
-            } else {
+                //     $this->response([
+                //         'status' => false,
+                //         'messages' => "Anda Telah Melakukan Presensi Datang Hari Ini"
+                //     ], REST_Controller::HTTP_FOUND);
+                // } else {
                 if (date('H') < 9) {
                     $query = $this->db->query("UPDATE `presensi` SET `waktu_datang` = '$waktu_datang', `ket_datang` = 'Tepat Waktu' WHERE `presensi`.`id_presensi` = '$id_presensi'");
                     if ($query) {
@@ -58,7 +61,7 @@ class Presensi extends REST_Controller
                 }
             }
         } else if ($flag === 'pulang') {
-            $cek_pulang = $this->db->query("SELECT waktu_pulang FROM presensi WHERE id_presensi = '$id_presensi'")->row_array();
+            $cek_pulang = $this->db->query("SELECT waktu_pulang FROM presensi WHERE id_presensi = '$id_presensi' ")->row_array();
             // var_dump($cek_pulang['waktu_pulang']);
             // die;
             if ($cek_pulang['waktu_pulang'] === "-") {

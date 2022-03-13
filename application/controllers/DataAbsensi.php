@@ -29,6 +29,7 @@ class DataAbsensi extends CI_Controller
 
     public function mulai_presensi()
     {
+        date_default_timezone_set('Asia/Makassar');
         $getUser = $this->db->query("SELECT id_user from user")->result_array();
         // var_dump($getUser);
         $tgl_presensi = date('d M Y');
